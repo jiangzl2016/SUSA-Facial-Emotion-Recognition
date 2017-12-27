@@ -7,6 +7,7 @@ import time
 import json
 from keras.models import Sequential
 
+
 # load data in imagelist.pkl format
 def load_pkl_data(file_path):
     with open(file_path, 'rb') as fin:
@@ -19,6 +20,7 @@ def load_pkl_data(file_path):
         kaggle_label_text = kaggle_label.emotion.tolist()
     return kaggle_img, kaggle_label_dummy, kaggle_label_cls, kaggle_label_text
 
+
 # load data in the most recent format
 def load_pd_data(file_path):
     with open(file_path, 'rb') as fin:
@@ -26,60 +28,46 @@ def load_pd_data(file_path):
         s = images_pd['pixels']
         img = pd.DataFrame.from_items(zip(s.index, s.values)).as_matrix()
         label = images_pd['emotion']
-        label_dummy = np.array(pd.get_dummies(label, columns= label))
-        label_cls = np.argmax(np.array(label_dummy, dtype=pd.Series), axis= 1)
+        label_dummy = np.array(pd.get_dummies(label, columns=label))
+        label_cls = np.argmax(np.array(label_dummy, dtype=pd.Series), axis=1)
         label_text = label.emotion.tolist()
     return img, label_dummy, label_cls, label_text
 
-def next_batch(x_train, y_train, batch_size = 128):
+
+def next_batch(x_train, y_train, batch_size=128):
     num_images = len(x_train)
-    id = np.random.choice(num_images, size= batch_size, replace= False)
+    id = np.random.choice(num_images, size=batch_size, replace=False)
     x_batch = x_train[id, :]
     y_batch = y_train[id, :]
     return x_batch, y_batch
 
+
 def plot_images(images, img_shape, cls_true, cls_pred=None):
     assert len(images) == len(cls_true) == 9
-
-    # Create figure with 3x3 sub-plots.
-    fig, axes = plt.subplots(3, 3)
+    # Create figure with 5x5 sub-plots.
+    fig, axes = plt.subplots(5, 5)
     fig.subplots_adjust(hspace=0.3, wspace=0.3)
-
     for i, ax in enumerate(axes.flat):
-        # Plot image.
         ax.imshow(images[i].reshape(img_shape), cmap='binary')
-
-        # Show true and predicted classes.
         if cls_pred is None:
             xlabel = "True: {0}".format(cls_true[i])
         else:
             xlabel = "True: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
-
-        # Show the classes as the label on the x-axis.
         ax.set_xlabel(xlabel)
-
-        # Remove ticks from the plot.
         ax.set_xticks([])
         ax.set_yticks([])
 
-    # Ensure the plot is shown correctly with multiple plots
-    # in a single Notebook cell.
     plt.show()
 
 
-def random_training_size(combined_size, combined_images, combined_labels):
-    # Create a randomized index into the full / combined training-set.
+def split_training_val(combined_size, combined_images, combined_labels):
     idx = np.random.permutation(combined_size)
     train_size = 0.8 * idx
-    # Split the random index into training- and validation-sets.
     idx_train = idx[0:train_size]
     idx_validation = idx[train_size:]
 
-    # Select the images and labels for the new training-set.
     x_train = combined_images[idx_train, :]
     y_train = combined_labels[idx_train, :]
-
-    # Select the images and labels for the new validation-set.
     x_validation = combined_images[idx_validation, :]
     y_validation = combined_labels[idx_validation, :]
 

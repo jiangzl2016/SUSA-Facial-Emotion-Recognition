@@ -14,43 +14,33 @@ from tensorflow.python.keras.optimizers import Adam
 
 
 def build_cnn_model():
-    # Equal to pixel size, change to 48
     img_size = 48
-
     img_size_flat = img_size * img_size
-
-    img_shape = (img_size, img_size)
-
-    img_shape_full = (img_size, img_size, 1)
-
-    num_channels = 1
-
+    img_shape = (img_size, img_size, 1)
+    #num_channels = 1
     num_classes = 6
-
-    # Start construction of the Keras Sequential model.
+    # Start construction of the Keras.
     model = Sequential()
-
     model.add(InputLayer(input_shape=(img_size_flat,)))
+    model.add(Reshape(img_shape))
 
-    model.add(Reshape(img_shape_full))
-
-    # First convolutional layer with ReLU-activation and max-pooling.
+    #model.add(Dropout(0.5, input_shape=(48, 48, 1)))
     model.add(Conv2D(kernel_size=5, strides=1, filters=16, padding='same',
                      activation='relu', name='layer_conv1'))
     model.add(MaxPooling2D(pool_size=2, strides=2))
 
-    # Second convolutional layer with ReLU-activation and max-pooling.
-    model.add(Conv2D(kernel_size=5, strides=1, filters=36, padding='same',
+    model.add(Conv2D(kernel_size=5, strides=1, filters=32, padding='same',
                      activation='relu', name='layer_conv2'))
     model.add(MaxPooling2D(pool_size=2, strides=2))
 
-    # Flatten the 4-rank output of the convolutional layers
-    # to 2-rank that can be input to a fully-connected / dense layer.
+    model.add(Conv2D(kernel_size=5, strides=1, filters=64, padding='same',
+                     activation='relu', name='layer_conv3'))
+    model.add(MaxPooling2D(pool_size=2, strides=2))
+
     model.add(Flatten())
 
-    # First fully-connected / dense layer with ReLU-activation.
     model.add(Dense(128, activation='relu'))
-
+    model.add(Dense(32, activation='relu'))
     # Last fully-connected / dense layer with softmax-activation
     # for use in classification.
     model.add(Dense(num_classes, activation='softmax'))
