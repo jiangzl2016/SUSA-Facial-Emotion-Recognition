@@ -13,11 +13,10 @@ from tensorflow_CNN.Utils import load_pkl_data
 # def generate_train_validate_set():
 #    return
 
-
 def build_model(image_size, num_channels, num_classes):
     x = tf.placeholder(tf.float32, shape=[None, image_size * image_size], name="x")
     x_image = tf.reshape(x, [-1, image_size, image_size, num_channels])
-    y_true = tf.placeholder(tf.float32, shape=[None, 10], name="y_true")
+    y_true = tf.placeholder(tf.float32, shape=[None, 9], name="y_true")
     y_true_cls = tf.argmax(y_true, axis=1)
 
     # create wrapper tensor
@@ -26,10 +25,13 @@ def build_model(image_size, num_channels, num_classes):
         y_pred, loss = x_pretty. \
             conv2d(5, 16, name='layer_conv1'). \
             max_pool(2, 2). \
-            conv2d(3, 36, name='layer_conv2'). \
+            conv2d(3, 32, name='layer_conv2'). \
             max_pool(2, 2). \
+            conv2d(3, 64, name= 'layer_conv3'). \
+            max_pool(2, 2).\
             flatten(). \
             fully_connected(128, name='layer_fc1'). \
+            fully_connected(32, name= 'layer_fc2'). \
             softmax_classifier(num_classes=num_classes, labels=y_true)
     optimizer = tf.train.AdamOptimizer(1e-4).minimize(loss)
     y_pred_cls = tf.argmax(y_pred, axis=1)
