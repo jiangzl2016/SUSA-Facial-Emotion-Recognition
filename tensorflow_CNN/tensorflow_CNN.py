@@ -4,26 +4,29 @@ import numpy as np
 import math
 import pandas as pd
 import pickle
+from Utils import load_pkl_data
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import InputLayer, Input
 from tensorflow.python.keras.layers import Reshape, MaxPooling2D
 from tensorflow.python.keras.layers import Conv2D, Dense, Flatten
 
-# Equal to pixel size, change to 48
-img_size = 48
-
-img_size_flat = img_size * img_size
-
-img_shape = (img_size, img_size)
-
-img_shape_full = (img_size, img_size, 1)
-
-num_channels = 1
-
-num_classes = 6
+from tensorflow.python.keras.optimizers import Adam
 
 
 def build_cnn_model():
+    # Equal to pixel size, change to 48
+    img_size = 48
+
+    img_size_flat = img_size * img_size
+
+    img_shape = (img_size, img_size)
+
+    img_shape_full = (img_size, img_size, 1)
+
+    num_channels = 1
+
+    num_classes = 6
+
     # Start construction of the Keras Sequential model.
     model = Sequential()
 
@@ -65,8 +68,36 @@ def save_data():
     return
 
 def train(model, X, Y, epoch, batch_size):
-    model.train()
-    return model 
+    model.fit(x = X, y = Y, epochs = epoch, batch_size = batch_size)
+    return model
+
+def evaluate(model, X, Y):
+    result = model.evaluate(X, Y)
+    for name, value in zip(model.metrics_names, result):
+        print(name, value)
+    return model
+
+def predict(model, X_):
+    y_pred = model.predict(x = X_)
+    cls_pred = np.argmax(y_pred, axis = 1)
+    return y_pred, cls_pred
 
 if __name__ == '__main__':
-    print('Train models.')
+    print('Load in Data ...')
+    train_X, train_Y , _, _ = load_pkl_data('./imagelist.pkl')
+    epochs = 10
+    batch_size = 128
+    model = build_cnn_model()
+    optimizer = Adam(lr = 1e-3)
+    model = compile_model(model, optimizer)
+    model = train(model, train_X, train_Y, epochs, batch_size)
+    # evaluate on training set itself
+    model = evaluate(model, train_X, train_Y)
+    # predict also on training set itself
+    y_pred, cls_pred = predict(model, train_X[0:9])
+    print(cls_pred)
+
+
+
+
+
