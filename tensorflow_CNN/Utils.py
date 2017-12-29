@@ -36,7 +36,7 @@ def load_pd_data(file_path):
 
 def next_batch(x_train, y_train, batch_size=128):
     num_images = len(x_train)
-    id = np.random.choice(num_images, size=batch_size, replace=False)
+    id = np.random.choice(num_images, size=batch_size, replace=True) # change to false later
     x_batch = x_train[id, :]
     y_batch = y_train[id, :]
     return x_batch, y_batch
