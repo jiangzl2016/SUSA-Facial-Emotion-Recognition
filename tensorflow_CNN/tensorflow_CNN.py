@@ -4,7 +4,7 @@ import numpy as np
 import math
 import pandas as pd
 import pickle
-from Utils import load_pkl_data
+from Utils import load_pd_data
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import InputLayer, Input
 from tensorflow.python.keras.layers import Reshape, MaxPooling2D
@@ -14,11 +14,11 @@ from tensorflow.python.keras.optimizers import Adam
 
 
 def build_cnn_model():
-    img_size = 48
+    img_size = 96
     img_size_flat = img_size * img_size
     img_shape = (img_size, img_size, 1)
     #num_channels = 1
-    num_classes = 6
+    num_classes = 9
     # Start construction of the Keras.
     model = Sequential()
     model.add(InputLayer(input_shape=(img_size_flat,)))
@@ -74,7 +74,8 @@ def predict(model, X_):
 
 if __name__ == '__main__':
     print('Load in Data ...')
-    train_X, train_Y , _, _ = load_pkl_data('./imagelist.pkl')
+    #train_X, train_Y , _, _ = load_pkl_data('./imagelist.pkl')
+    train_X, train_Y, _, _ = load_pd_data('../data/pixel_kaggle.pd')
     epochs = 10
     batch_size = 128
     model = build_cnn_model()

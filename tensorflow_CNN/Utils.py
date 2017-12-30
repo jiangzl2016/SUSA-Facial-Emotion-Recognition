@@ -22,6 +22,7 @@ def load_pkl_data(file_path):
 
 
 # load data in the most recent format
+'''
 def load_pd_data(file_path):
     with open(file_path, 'rb') as fin:
         images_pd = pickle.load(fin)
@@ -32,8 +33,20 @@ def load_pd_data(file_path):
         label_cls = np.argmax(np.array(label_dummy, dtype=pd.Series), axis=1)
         label_text = label.emotion.tolist()
     return img, label_dummy, label_cls, label_text
+'''
 
+def load_pd_data(file_path):
+    with open(file_path, 'rb') as fin:
+        images_pd = pickle.load(fin)
+        images_pd = images_pd.dropna(axis=0, how='any')
+        images_pd.reset_index(drop=True, inplace=True)
+        img = np.asarray([images_pd.loc[i,'pixels'] for i in range(len(images_pd))])
+        label_text = images_pd['emotion'].values.tolist()
+        label_dummy = np.array(pd.get_dummies(label_text, columns=label_text))
+        label_cls = np.argmax(np.array(label_dummy, dtype=pd.Series), axis=1)
+    return img, label_dummy, label_cls, label_text
 
+    
 def next_batch(x_train, y_train, batch_size=128):
     num_images = len(x_train)
     id = np.random.choice(num_images, size=batch_size, replace=True) # change to false later
