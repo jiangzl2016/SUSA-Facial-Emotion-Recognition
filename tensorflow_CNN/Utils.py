@@ -95,6 +95,13 @@ def save_model(json_string, dirpath='../data/results/'):
     with open(dirpath + starttime + '.txt', 'w') as f:
         f.write(json_string)
 
+def save_keras_model(model, addr = "ADAM_16_16_16_16F64_32_16"):
+    model.save(addr + ".h5")
+    model_json = model.to_json()
+    with open(addr + ".json", "w") as json_file:
+        json_file.write(model_json)
+
+
 
 def save_config(config, dirpath='../data/results/'):
     with open(dirpath + 'config_log.txt', 'a') as f:
