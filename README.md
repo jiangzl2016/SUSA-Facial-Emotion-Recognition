@@ -27,12 +27,12 @@ Script to train either a Max-pooling CNN or ResNet-like architecture depending o
 ## Model
 The model uses an ensemble of 8 multi-layer CNNs and 8 ResNet-18s, where each model is trained and saved separately and then loaded to generate prediction using weighted average pooling. The structure is shown below:
 
-![](./pic/1.pdf)
+![](./keras-ensemble/pic/1.pdf)
 
 Each CNN contains 4 conv + 3 conv + 2 conv with maxpooling with 3 dense layers. Each ResNet contains for blocks of conv + batchnorm + maxpooling. 
 
 
-![](./pic/2.pdf)
+![](./keras-ensemble/pic/2.pdf)
 
 
 
