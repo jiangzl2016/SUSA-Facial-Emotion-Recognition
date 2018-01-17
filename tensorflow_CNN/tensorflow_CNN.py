@@ -11,7 +11,6 @@ from tensorflow.python.keras.layers import Reshape, MaxPooling2D
 from tensorflow.python.keras.layers import Conv2D, Dense, Flatten
 from tensorflow.python.keras.optimizers import Adam
 
-
 def build_cnn_model():
     img_size = 96
     img_size_flat = img_size * img_size
@@ -86,6 +85,7 @@ if __name__ == '__main__':
     # predict also on training set itself
     y_pred, cls_pred = predict(model, train_X[0:9])
     print(cls_pred)
+
 
 
 
